@@ -1,0 +1,17 @@
+name: Develop Push
+on:
+  push:
+    branches:
+      - 'develop'
+jobs:
+  prerelease:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    name: Create prerelease
+    steps:
+      - uses: actions/checkout@v3
+      - name: Semantic release
+        id: semantic
+        uses: codfish/semantic-release-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,22 @@
+name: Master Push
+on:
+  push:
+    branches:
+      - 'master'
+jobs:
+  prerelease:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    name: Create release
+    steps:
+      - uses: actions/checkout@v3
+      - name: Semantic release
+        id: semantic
+        uses: codfish/semantic-release-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: push release back
+        run: |
+          # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
+          git checkout develop
+          git merge master -m "chore: Merge branch master [skip ci]"
